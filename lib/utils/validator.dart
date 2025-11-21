@@ -26,13 +26,23 @@ class Validators {
   static String? validateDate(String? value) {
     if (value == null || value.trim().isEmpty) {
       return StringResources.dateRequired;
-    } else {}
+    }
+    return null;
   }
 
   static String? validateTime(String? value) {
     if (value == null || value.trim().isEmpty) {
       return StringResources.timeRequired;
-    } else {}
+    }
+    return null;
+  }
+
+  static String? validateDescription(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return StringResources.descriptionRequired;
+    } else {
+      return null;
+    }
   }
 
   static String? validateOptional(String? value) {

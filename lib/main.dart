@@ -1,9 +1,13 @@
+import 'package:app_screens/viewmodel/guest_list_controller.dart';
 import 'package:app_screens/views/create_plan_screen/create_plan_view.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/instance_manager.dart';
 
 void main() {
-  runApp(const MyApp());
+  Get.put(GuestController());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

@@ -16,6 +16,7 @@ class CustomTextfield extends StatelessWidget {
   final VoidCallback? onPressed;
   final List<String>? dropdownOptions;
   final Function(String)? onOptionSelected;
+  final FocusNode? focusNode;
 
   const CustomTextfield({
     super.key,
@@ -33,6 +34,7 @@ class CustomTextfield extends StatelessWidget {
     this.onPressed,
     this.dropdownOptions,
     this.onOptionSelected,
+    this.focusNode,
   });
 
   @override
@@ -52,13 +54,15 @@ class CustomTextfield extends StatelessWidget {
           ),
         ),
         SizedBox(height: 10),
-        SizedBox(
+        Container(
           width: double.infinity,
+
           child: GestureDetector(
             onTap: onPressed,
             child: TextFormField(
+              readOnly: readOnly,
               enabled: enable,
-
+              focusNode: focusNode,
               validator: valdiator,
               controller: controller,
               maxLines: maxLine,
@@ -71,14 +75,14 @@ class CustomTextfield extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(9),
                   borderSide: BorderSide(
                     color: const Color.fromARGB(255, 226, 226, 226),
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.blue[400]!, width: 2),
+                  borderSide: BorderSide(color: Colors.blue[400]!, width: 1),
                 ),
                 errorBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -86,7 +90,7 @@ class CustomTextfield extends StatelessWidget {
                 ),
                 focusedErrorBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: Colors.red, width: 2),
+                  borderSide: const BorderSide(color: Colors.red, width: 1),
                 ),
                 filled: true,
                 fillColor: Colors.white,
@@ -107,17 +111,31 @@ class CustomTextfield extends StatelessWidget {
   }
 
   Widget _buildDropdownMenu() {
-    return PopupMenuButton<String>(
-      color: Colors.white,
-      icon: Icon(Icons.arrow_drop_down, color: Colors.grey[700]),
-      onSelected: (String value) {
-        controller.text = value;
-        onOptionSelected?.call(value);
-      },
-      itemBuilder: (BuildContext context) {
-        return dropdownOptions!.map<PopupMenuEntry<String>>((String value) {
-          return PopupMenuItem<String>(value: value, child: Text(value));
-        }).toList();
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return PopupMenuButton<String>(
+          color: Colors.white,
+          icon: Icon(Icons.arrow_drop_down, color: Colors.grey[700]),
+          constraints: BoxConstraints(
+            minWidth: constraints.maxWidth, // Yahan set karen
+            maxWidth: constraints.maxWidth, // Yahan bhi
+          ),
+          onSelected: (String value) {
+            controller.text = value;
+            onOptionSelected?.call(value);
+          },
+          itemBuilder: (BuildContext context) {
+            return dropdownOptions!.map<PopupMenuEntry<String>>((String value) {
+              return PopupMenuItem<String>(
+                value: value,
+                child: SizedBox(
+                  width: constraints.maxWidth, // Poori width
+                  child: Text(value),
+                ),
+              );
+            }).toList();
+          },
+        );
       },
     );
   }

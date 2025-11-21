@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:app_screens/utils/validator.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +24,7 @@ class CreatePlanController extends GetxController {
   final selectedDate = ''.obs;
   final selectedTime = ''.obs;
   final isPublic = true.obs;
-  final selectedGender = 'Male'.obs;
+  final selectedGenders = <String>[].obs;
 
   // Dispose Controllers
   @override
@@ -48,9 +50,17 @@ class CreatePlanController extends GetxController {
     return Validators.validatePlanType(selectedPlanType.value);
   }
 
+  String? validateDate() {
+    return Validators.validateDate(selectedDate.value);
+  }
+
+  String? validateTime() {
+    return Validators.validateTime(selectedTime.value);
+  }
+
   // Description optional
   String? validateDescription(String? value) {
-    return null;
+    return Validators.validateDescription(descriptionController.text.trim());
   }
 
   // Plan Type Selection
@@ -69,12 +79,21 @@ class CreatePlanController extends GetxController {
   }
 
   // Gender Selection
-  void selectGender(String gender) {
-    selectedGender.value = gender;
+  void toggleGender(String gender) {
+    if (selectedGenders.contains(gender)) {
+      selectedGenders.remove(gender);
+    } else {
+      selectedGenders.add(gender);
+    }
+    update();
+  }
+
+  bool isGenderSelected(String gender) {
+    return selectedGenders.contains(gender);
   }
 
   // Date Picker
-
+  // Date Picker
   Future<void> pickDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -84,14 +103,16 @@ class CreatePlanController extends GetxController {
     );
 
     if (picked != null) {
-      final month = picked.month.toString().padLeft(2, '0');
-      final day = picked.day.toString().padLeft(2, '0');
-      final year = picked.year.toString();
+      // Convert picked date to UTC
+      final utcDate = DateTime.utc(picked.year, picked.month, picked.day);
+      final month = utcDate.month.toString().padLeft(2, '0');
+      final day = utcDate.day.toString().padLeft(2, '0');
+      final year = utcDate.year.toString();
       selectedDate.value = '$month/$day/$year';
     }
   }
 
-  // Time Picker
+  // Time Picker with Proper UTC Conversion
   Future<void> pickTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -99,9 +120,23 @@ class CreatePlanController extends GetxController {
     );
 
     if (picked != null) {
-      final period = picked.hour >= 12 ? 'PM' : 'AM';
-      final hour = picked.hour > 12 ? picked.hour - 12 : picked.hour;
-      final minute = picked.minute.toString().padLeft(2, '0');
+      final now = DateTime.now();
+
+      final localDateTime = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        picked.hour,
+        picked.minute,
+      );
+
+      final utcDateTime = localDateTime.toUtc();
+
+      final utcHour = utcDateTime.hour;
+      final period = utcHour >= 12 ? 'PM' : 'AM';
+      final hour = utcHour > 12 ? utcHour - 12 : (utcHour == 0 ? 12 : utcHour);
+      final minute = utcDateTime.minute.toString().padLeft(2, '0');
+
       selectedTime.value = '$hour:$minute$period';
     }
   }
@@ -109,11 +144,13 @@ class CreatePlanController extends GetxController {
   // Form Submit Method
   void createPlan() {
     errorMessage.value = '';
+    log("button pressed");
 
     // Validate all required fields
     final planNameValidation = validatePlanName(planNameController.text);
     final locationValidation = validateLocation(locationController.text);
     final planTypeValidation = validatePlanType();
+    log("validations done");
 
     // Check if any validation failed
     if (planNameValidation != null) {
@@ -130,6 +167,7 @@ class CreatePlanController extends GetxController {
       errorMessage.value = planTypeValidation;
       return;
     }
+    log("all validations passed");
 
     _submitPlanData();
   }

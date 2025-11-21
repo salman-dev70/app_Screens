@@ -40,6 +40,7 @@ class StringResources {
 
   // Validation Messages
   static const String planNameRequired = 'Plan Name is required';
+  static const String descriptionRequired = 'Description is required';
   static const String locationRequired = 'Location is required';
   static const String planTypeRequired = 'Please select a plan type';
   static const String fieldRequired = 'is required';

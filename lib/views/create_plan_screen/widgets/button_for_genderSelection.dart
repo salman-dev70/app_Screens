@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class RadioButtonGender extends StatelessWidget {
+class GenderChipWidget extends StatelessWidget {
   final String label;
+  final List<String> selectedValues;
+  final Function(String) onChanged;
   final String buttonValue1;
   final String buttonValue2;
   final String buttonValue3;
-  final String selectedValue;
-  final Function(String) onChanged;
 
-  const RadioButtonGender({
+  const GenderChipWidget({
     Key? key,
     required this.label,
-    required this.selectedValue,
+    required this.selectedValues,
     required this.onChanged,
     required this.buttonValue1,
     required this.buttonValue2,
@@ -21,88 +21,78 @@ class RadioButtonGender extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            label,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          ),
+        Text(
+          label,
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
-        const SizedBox(height: 20),
-
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Container(
-            width: 250,
-            decoration: BoxDecoration(
-              // border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Row(
-              spacing: 13,
-              children: [
-                _buildButton(buttonValue1, Icon(Icons.male, size: 15)),
-                _buildButton(buttonValue2, Icon(Icons.female, size: 15)),
-                _buildButton(
-                  buttonValue3,
-                  Icon(Icons.accessible_rounded, size: 15),
-                ),
-              ],
-            ),
-          ),
+        SizedBox(height: 12),
+        Row(
+          children: [
+            _buildGenderChip(buttonValue1),
+            SizedBox(width: 5),
+            _buildGenderChip(buttonValue2),
+            SizedBox(width: 5),
+            _buildGenderChip(buttonValue3),
+          ],
         ),
-
-        const SizedBox(height: 16),
       ],
     );
   }
 
-  Widget _buildButton(String option, Widget icon) {
-    bool isSelected = selectedValue == option;
+  Widget _buildGenderChip(String gender) {
+    final isSelected = selectedValues.contains(gender);
 
-    return Expanded(
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        clipBehavior: Clip.none,
-        height: 35,
+    return GestureDetector(
+      onTap: () {
+        onChanged(gender);
+      },
+      child: Container(
+        height: 30,
+        padding: EdgeInsets.symmetric(horizontal: 11, vertical: 5),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
           color:
               isSelected
-                  ? const Color.fromARGB(255, 135, 178, 252)
-                  : const Color.fromARGB(255, 230, 229, 229),
-          border: Border(right: BorderSide(color: Colors.white)),
+                  ? const Color.fromARGB(255, 139, 199, 248)
+                  : const Color.fromARGB(255, 241, 241, 241)!,
+          // Yahan ! lagayein
+          borderRadius: BorderRadius.circular(20),
         ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () => onChanged(option),
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  icon,
-                  Text(
-                    option,
-                    style: TextStyle(
-                      color:
-                          isSelected
-                              ? const Color.fromARGB(255, 48, 47, 47)
-                              : Colors.black,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 13,
-                    ),
-                  ),
-                ],
+        child: Row(
+          children: [
+            Icon(
+              _getGenderIcon(gender),
+              color: isSelected ? Colors.black : Colors.black,
+
+              size: 19,
+            ),
+            SizedBox(width: 1),
+            Text(
+              gender,
+              style: TextStyle(
+                color: isSelected ? Colors.black : Colors.black,
+                // Yahan bhi ! lagayein
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
+  }
+
+  IconData _getGenderIcon(String gender) {
+    switch (gender) {
+      case 'Male':
+        return Icons.male;
+      case 'Female':
+        return Icons.female;
+      case 'Other':
+        return Icons.transgender;
+      default:
+        return Icons.person;
+    }
   }
 }
