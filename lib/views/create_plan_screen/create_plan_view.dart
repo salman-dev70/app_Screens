@@ -1,14 +1,15 @@
+import 'package:app_screens/controller/create_plan_controller.dart';
+import 'package:app_screens/controller/guest_list_controller.dart';
 import 'package:app_screens/utils/string_resources.dart';
 import 'package:app_screens/utils/validator.dart';
-import 'package:app_screens/viewmodel/create_plan_controller.dart';
-import 'package:app_screens/viewmodel/guest_list_controller.dart';
-import 'package:app_screens/views/create_plan_screen/widgets/appbar_back_icon_widget.dart';
-import 'package:app_screens/views/create_plan_screen/widgets/button_for_genderSelection.dart';
-import 'package:app_screens/views/create_plan_screen/widgets/button_widget.dart';
-import 'package:app_screens/views/create_plan_screen/widgets/custom_textfield.dart';
-import 'package:app_screens/views/create_plan_screen/widgets/image_pickerSection_widget.dart';
-import 'package:app_screens/views/create_plan_screen/widgets/invite_guest.dart';
-import 'package:app_screens/views/create_plan_screen/widgets/radioButton.dart';
+
+import 'package:app_screens/utils/widgets/appbar_back_icon_widget.dart';
+import 'package:app_screens/utils/widgets/button_for_genderSelection.dart';
+import 'package:app_screens/utils/widgets/button_widget.dart';
+import 'package:app_screens/utils/widgets/custom_textfield.dart';
+import 'package:app_screens/utils/widgets/image_pickerSection_widget.dart';
+import 'package:app_screens/utils/widgets/invite_guest.dart';
+import 'package:app_screens/utils/widgets/radioButton.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
